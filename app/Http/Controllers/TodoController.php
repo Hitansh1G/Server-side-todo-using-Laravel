@@ -32,24 +32,21 @@ class TodoController extends Controller
         return view('todo.edit', ['todo' => $todo]);
     }
 
-    public function update(Request $request, Todo $todo){
+    public function update(Request $request, Todo $todo) {
         $request->validate([
             'completed' => 'required|boolean',
         ]);
     
-        // Convert checkbox value to boolean
-        $completed = $request->has('completed');
+        $completed = $request->input('completed');
     
-        // Check if 'completed' field has changed
         if ($completed !== $todo->completed) {
-            // 'completed' field has changed, proceed with the update
             $todo->update(['completed' => $completed]);
-            return redirect()->route('todo.index')->with('success', 'Todo updated successfully.');
+            return response()->json(['message' => 'Todo updated successfully']);
         } else {
-            // 'completed' field has not changed
-            return redirect()->back()->with('error', 'Completed field must be changed from true to false or false to true.');
+            return response()->json(['message' => 'Completed field must be changed'], 422);
         }
     }
+    
     
     public function destroy(Todo $todo){
         $todo->delete();
@@ -67,6 +64,20 @@ class TodoController extends Controller
             return response()->json(['message' => 'Failed to clear all todos'], 500);
         }
     }
+    public function updateTodo(Request $request, Todo $todo)
+    {
+        $data = $request->validate([
+            'Todo' => 'required',
+            'completed' => 'required|boolean',
+        ]);
+
+        $todo->update($data);
+
+        return response()->json($todo);
+    }
+
+
+    
     
     
 }
