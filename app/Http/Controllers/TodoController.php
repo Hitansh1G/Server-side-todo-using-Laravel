@@ -7,11 +7,10 @@ use App\Models\Todo;
 
 class TodoController extends Controller
 {
+    const REQUIRED = 'required|boolean';
     public function index(){
         $todo = Todo::all();
         return response()->json($todo);
-        return view('todo.index', ['todo' => $todo]);
-        
     }
     public function create(){
         return view('todo.create');
@@ -20,7 +19,7 @@ class TodoController extends Controller
 
         $data = $request->validate([
             'Todo' => 'required',
-            'completed' => 'required|boolean',
+            'completed' => "REQUIRED",
         ]);
 
         $newTodo = Todo::create($data);
@@ -34,7 +33,7 @@ class TodoController extends Controller
 
     public function update(Request $request, Todo $todo) {
         $request->validate([
-            'completed' => 'required|boolean',
+            'completed' => 'REQUIRED',
         ]);
     
         $completed = $request->input('completed');
@@ -68,7 +67,7 @@ class TodoController extends Controller
     {
         $data = $request->validate([
             'Todo' => 'required',
-            'completed' => 'required|boolean',
+            'completed' => 'REQUIRED',
         ]);
 
         $todo->update($data);
